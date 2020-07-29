@@ -13,8 +13,22 @@
 ## 2. Brief Summary of *'Aggregated Residual Transformations for Deep Neural Networks'*
 
 ### 2.1. Goal
+- Improve performance of image classification with low complexity
 
 ### 2.2. Intuition
+- VGGNet & ResNet : stack layers strategy
+  * Pros
+    * Easy to design architecture
+    * Reduce risk of over-adapting to a specific dataset due to simplicity of the rule
+  * Cons
+    * Reduce the free choices of hyperparameters
+    * High complexity
+- Inception : split-transform-merge strategy
+  * Pros
+    * Compelling accuracy with low complexity
+  * Cons
+    * Hard to design architecture
+    * Many factors and hyperparameters to be designed
 
 ### 2.3. Dataset
 
