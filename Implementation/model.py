@@ -19,14 +19,13 @@ pretrained_model_urls = {
 }
 
 
-# +
 class Bottleneck_ImageNet(nn.Module):
     expansion = 4
     def __init__(self, inplanes, stride=1, cardinality=None, first=False):
         super(Bottleneck_ImageNet, self).__init__()
         self.stride = stride
         self.first = first
-        
+
         if self.stride != 1:
             self.conv1 = nn.Conv2d(inplanes, inplanes, kernel_size=1, stride=self.stride, bias=False)
             self.downsample = nn.Sequential(
@@ -70,15 +69,15 @@ class Bottleneck_ImageNet(nn.Module):
         out = self.relu(out)
 
         return out
-    
-    
+
+
 class Bottleneck_CIFAR(nn.Module):
     expansion = 4
     def __init__(self, inplanes, stride=1, cardinality=None, first=False):
         super(Bottleneck_CIFAR, self).__init__()
         self.stride = stride
         self.first = first
-        
+
         if self.stride != 1:
             self.conv1 = nn.Conv2d(4*inplanes, inplanes, kernel_size=1, stride=self.stride, bias=False)
             self.downsample = nn.Sequential(
@@ -122,9 +121,7 @@ class Bottleneck_CIFAR(nn.Module):
         out = self.relu(out)
 
         return out
-
-
-# -
+        
 
 class _resnext(nn.Module):
 
@@ -132,7 +129,7 @@ class _resnext(nn.Module):
         super(_resnext, self).__init__()
         self.mode = mode
         self.cardinality = cardinality
-        
+
         if self.mode == 'ImageNet':
             self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
             self.bn1 = nn.BatchNorm2d(64)
@@ -144,7 +141,7 @@ class _resnext(nn.Module):
             self.layer4 = self._make_layer(block, 1024, layers[3], stride=2)
             self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
             self.fc = nn.Linear(block.expansion*512, num_classes)
-            
+
         if self.mode == 'CIFAR':
             self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
             self.bn1 = nn.BatchNorm2d(64)
@@ -185,7 +182,7 @@ class _resnext(nn.Module):
         x = self.fc(x)
 
         return x
-    
+
     def _forward_CIFAR(self, x):
         x = self.conv1(x)
         x = self.bn1(x)
@@ -213,21 +210,21 @@ cfgs = {
     # ImageNet Model
     50 : ['ImageNet', Bottleneck_ImageNet, [32, 4], [3, 4, 6, 3]],
     101 : ['ImageNet', Bottleneck_ImageNet, [32, 8], [3, 4, 23, 3]],
-    
+
     # CIFAR Model
     29 : ['CIFAR', Bottleneck_CIFAR, [16, 4], [3, 3, 3]]
 }
 
 
 def resnext(depth, num_classes, pretrained):
-    
+
     model = _resnext(mode=cfgs[depth][0], block=cfgs[depth][1], cardinality=cfgs[depth][2], layers=cfgs[depth][3], num_classes=num_classes)
     arch = 'resnext'+str(depth)
-    
+
     if pretrained and (num_classes == 1000) and (arch in pretrained_model_urls):
         state_dict = load_state_dict_from_url(pretrained_model_urls[arch], progress=True)
         model.load_state_dict(state_dict)
     elif pretrained:
         raise ValueError('No pretrained model in resnext {} model with class number {}'.format(depth, num_classes))
-            
+
     return model
