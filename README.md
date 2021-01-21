@@ -18,6 +18,10 @@ six == 1.12.0
 
 
 ## 1. Explain about Implementation
+- model.py : ImageNet_50, ImageNet_101, CIFAR10_29
+- train.py : train model
+- utils.py : count right prediction, save checkpoints
+- Add adaptive average pooling layer before FC layer for shape issues
 
 
 ## 2. Brief Summary of *'Aggregated Residual Transformations for Deep Neural Networks'*
